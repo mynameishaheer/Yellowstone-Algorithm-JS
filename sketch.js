@@ -36,7 +36,7 @@ function windowResized() {
 function resetSketch(){
   cSlider.value(0.005);
   sSlider.value(0.01);
-  aSlider.value(0.05);
+  aSlider.value(0.09);
   speedLimitSlider.value(5);
   visualRadiusSlider.value(60);
   minDistanceSlider.value(40);
