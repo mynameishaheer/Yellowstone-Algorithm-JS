@@ -1,16 +1,23 @@
 class Plant {
-  constructor() {
+  constructor(x, y) {
     this.position = createVector(
-      random() * windowWidth,
-      random() * windowHeight - 1
+      x,
+      y
+      // random() * windowWidth,
+      // random() * windowHeight - 1
     );
+    // this.position = pos;
     this.alive = true;
+  }
+
+  calculateDistance(otherBoid) {
+    return this.position.dist(otherBoid.position);
   }
 
   update() {}
 
   draw() {
-    fill(0, 255, 0);
+    fill(0, 255, 100);
     circle(this.position.x, this.position.y, 5);
   }
 }

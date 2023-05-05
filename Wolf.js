@@ -5,7 +5,17 @@ class Wolf {
       (random() * windowHeight) / 2 - 1
     );
     this.velocity = createVector(random(-1, 1), random(-1, 1));
-    this.minSpeed = 3;
+
+    //data used to control the behavior of the wolf
+    this.minSpeed = 1.5;
+    this.maxSpeed = 4;
+    this.turnFactor = 0.2;
+    this.avoidLakeFactor = 5;
+    this.avoidMountainsFactor = 5;
+
+    this.cohesionFactor = 0.0005;
+    this.alignmentFactor = 0.09;
+    this.seperationFactor = 0.01;
   }
 
   update() {
@@ -16,7 +26,8 @@ class Wolf {
     //   this.graze();
     this.chase();
     this.kill();
-
+    this.avoidLake();
+    this.avoidMountains();
     this.limitSpeed();
     this.keepInBounds();
 
@@ -34,29 +45,29 @@ class Wolf {
   }
 
   keepInBounds() {
-    const margin = 250;
-    const turnFactor = 0.2; //how fast does it turn
+    const margin = 50;
+    // const turnFactor = 0.2; //how fast does it turn
 
     if (this.position.x < windowWidth - windowWidth / 3) {
-      this.velocity.x += turnFactor;
+      this.velocity.x += this.turnFactor;
     }
     if (this.position.x > windowWidth - margin) {
-      this.velocity.x -= turnFactor;
+      this.velocity.x -= this.turnFactor;
     }
     if (this.position.y < margin) {
-      this.velocity.y += turnFactor;
+      this.velocity.y += this.turnFactor;
     }
     if (this.position.y > windowHeight - margin) {
-      this.velocity.y -= turnFactor;
+      this.velocity.y -= this.turnFactor;
     }
   }
 
   limitSpeed() {
     const speed = this.velocity.mag();
 
-    if (speed > 8) {
-      this.velocity.x = (this.velocity.x / speed) * 8; //normalize
-      this.velocity.y = (this.velocity.y / speed) * 8; //normalize
+    if (speed > this.maxSpeed) {
+      this.velocity.x = (this.velocity.x / speed) * this.maxSpeed; //normalize
+      this.velocity.y = (this.velocity.y / speed) * this.maxSpeed; //normalize
     }
     if (speed < this.minSpeed) {
       this.velocity.x = (this.velocity.x / speed) * this.minSpeed; //normalize
@@ -68,11 +79,52 @@ class Wolf {
     return this.position.dist(otherBoid.position);
   }
 
+  avoidLake() {
+    let centerX = 0;
+    let centerY = 0;
+    let nBoids = 0;
+
+    if (this.calculateDistance(lake) < 150) {
+      centerX = centerX - (lake.position.x - this.position.x);
+      centerY = centerY - (lake.position.y - this.position.y);
+      nBoids++;
+    }
+
+    if (nBoids > 0) {
+      centerX = centerX / nBoids;
+      centerY = centerY / nBoids;
+
+      this.velocity.x += centerX * this.avoidLakeFactor;
+      this.velocity.y += centerY * this.avoidLakeFactor;
+    }
+  }
+  avoidMountains() {
+    let centerX = 0;
+    let centerY = 0;
+    let nBoids = 0;
+
+    for (let mountain of mountains) {
+      if (this.calculateDistance(mountain) < 50) {
+        centerX = centerX - (mountain.position.x - this.position.x);
+        centerY = centerY - (mountain.position.y - this.position.y);
+        nBoids++;
+      }
+
+      if (nBoids > 0) {
+        centerX = centerX / nBoids;
+        centerY = centerY / nBoids;
+
+        this.velocity.x += centerX * this.avoidMountainsFactor;
+        this.velocity.y += centerY * this.avoidMountainsFactor;
+      }
+    }
+  }
+
   chase() {
     for (let d of deer) {
       if (this.calculateDistance(d) < 100) {
-        this.velocity.x += (d.position.x - this.position.x) * 0.001;
-        this.velocity.y += (d.position.y - this.position.y) * 0.001;
+        this.velocity.x += (d.position.x - this.position.x) * 0.005;
+        this.velocity.y += (d.position.y - this.position.y) * 0.005;
         // this.kill()
       }
     }
@@ -104,8 +156,8 @@ class Wolf {
       centerX = centerX / nBoids;
       centerY = centerY / nBoids;
 
-      this.velocity.x += (centerX - this.position.x) * 0.0005;
-      this.velocity.y += (centerY - this.position.y) * 0.0005;
+      this.velocity.x += (centerX - this.position.x) * this.cohesionFactor;
+      this.velocity.y += (centerY - this.position.y) * this.cohesionFactor;
     }
   }
 
@@ -122,8 +174,8 @@ class Wolf {
       }
     }
 
-    this.velocity.x += moveX * 0.01;
-    this.velocity.y += moveY * 0.01;
+    this.velocity.x += moveX * this.seperationFactor;
+    this.velocity.y += moveY * this.seperationFactor;
   }
 
   alignment() {
@@ -143,8 +195,8 @@ class Wolf {
       avgDX = avgDX / nBoids;
       avgDY = avgDY / nBoids;
 
-      this.velocity.x += (avgDX - this.velocity.x) * 0.09;
-      this.velocity.y += (avgDY - this.velocity.y) * 0.09;
+      this.velocity.x += (avgDX - this.velocity.x) * this.alignmentFactor;
+      this.velocity.y += (avgDY - this.velocity.y) * this.alignmentFactor;
     }
   }
 }
