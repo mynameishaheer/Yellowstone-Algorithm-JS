@@ -41,6 +41,7 @@ function setup() {
 // }
 
 function resetSketch() {
+  release = false;
   deer = [];
   plants = [];
   wolves = [];
@@ -127,10 +128,12 @@ function draw() {
   tick = parseInt(tick + random(1, 10));
   // background(bg);
   image(bg, 0, -120);
+  // fill(255, 255, 255, 255);
+  // circle(windowWidth/2, windowHeight/2, this.radius);
   textSize(16);
   // text("Plants: " + plants.length, 10, 90);
-  text("Window Width: " + windowWidth, 10, 90);
-  text("Window Height: " + windowHeight, 10, 110);
+  // text("Window Width: " + windowWidth, 10, 90);
+  // text("Window Height: " + windowHeight, 10, 110);
   text("Deer: " + deer.length, 10, 110);
   text("Wolves: " + wolves.length, 10, 130);
 
@@ -139,23 +142,28 @@ function draw() {
   }
 
   if (tick % 100 == 0 && release) {
-    if (wolves.length < 33) {
+    if (wolves.length < 50) {
       wolves.push(new Wolf());
     }
   }
 
   if (tick % 16 == 0) {
     for (g of grazingFields) {
+      let theta = random(0, 2 * PI);
+      let rad = random(0, g.radius);
       let position = createVector(
-        g.position.x - g.radius + random() * g.radius,
-        g.position.y - g.radius + random() * g.radius
+        g.position.x + 0.75 * rad * cos(theta),
+        g.position.y + 0.75 * rad * sin(theta)
+        // g.position.x + random(-g.radius, g.radius),
+
+        // g.position.y + random(-g.radius, g.radius)
       );
       // print(plants.length);
       if (plants.length < 700) plants.push(new Plant(position.x, position.y));
     }
   }
 
-  if (tick % 1000 == 0) {
+  if (tick % 100 == 0) {
     deer.push(new Deer());
   }
 

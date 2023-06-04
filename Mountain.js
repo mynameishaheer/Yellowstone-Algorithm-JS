@@ -7,7 +7,7 @@ class Mountain {
   }
 
   draw() {
-    // noStroke();
+    noStroke();
     fill(123, 123, 123, 0);
     // Rectangle(this.position.x, this.position.y, 100, 100)
     circle(this.position.x, this.position.y, this.radius);

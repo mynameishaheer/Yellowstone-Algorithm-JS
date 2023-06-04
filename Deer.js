@@ -26,7 +26,7 @@ class Deer {
     this.alignment();
 
     this.graze();
-    this.enterGrazingField();
+    // this.enterGrazingField();
     this.flee();
     this.avoidMountains();
     this.avoidLake();
@@ -146,27 +146,12 @@ class Deer {
       }
     }
 
-    let centerX = 0;
-    let centerY = 0;
-    let nBoids = 0;
-
-    centerX = centerX + closestPlant.position.x;
-    centerY = centerY + closestPlant.position.y;
-    nBoids++;
-    if (nBoids > 0) {
-      centerX = centerX / nBoids;
-      centerY = centerY / nBoids;
-
-      this.velocity.x += (centerX - this.position.x) * this.grazingFactor;
-      this.velocity.y += (centerY - this.position.y) * this.grazingFactor;
-    }
+    this.velocity.x += (closestPlant.position.x - this.position.x) * this.grazingFactor;
+    this.velocity.y += (closestPlant.position.y - this.position.y) * this.grazingFactor;
 
     for (var i = 0; i < plants.length; i++) {
-      if (plants[i].alive) {
         if (this.calculateDistance(plants[i]) < 10) {
-          plants[i].alive = false;
           plants.splice(i, 1);
-        }
       }
     }
   }

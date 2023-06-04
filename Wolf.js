@@ -48,7 +48,7 @@ class Wolf {
     const margin = 50;
     // const turnFactor = 0.2; //how fast does it turn
 
-    if (this.position.x < windowWidth - windowWidth / 3) {
+    if (this.position.x < windowWidth - windowWidth / 2) {
       this.velocity.x += this.turnFactor;
     }
     if (this.position.x > windowWidth - margin) {
@@ -123,8 +123,8 @@ class Wolf {
   chase() {
     for (let d of deer) {
       if (this.calculateDistance(d) < 100) {
-        this.velocity.x += (d.position.x - this.position.x) * 0.005;
-        this.velocity.y += (d.position.y - this.position.y) * 0.005;
+        this.velocity.x += (d.position.x - this.position.x) * 0.000005;
+        this.velocity.y += (d.position.y - this.position.y) * 0.000005;
         // this.kill()
       }
     }
