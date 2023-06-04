@@ -1,5 +1,8 @@
 # Yellowstone-Algorithm-JS
 
+#### Link to the simulation
+https://mynameishaheer.github.io/Yellowstone-Algorithm-JS/
+
 #### How to run the code
 1. Open in VS Code
 2. Install Extention "p5.vscode" by Sam Lavigne
